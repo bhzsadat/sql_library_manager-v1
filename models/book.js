@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
+  // Book model definition
   Book.init({
     title: {
       type: DataTypes.STRING,

@@ -5,7 +5,6 @@ var cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 var logger = require('morgan');
 const { sequelize, Book } = require('./models');
-
 var indexRouter = require('./routes/book');
 
 var app = express();
@@ -14,6 +13,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// Middleware
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cookieParser());
@@ -22,14 +22,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/', indexRouter);
 
-// catch 404 and forward to error handler
+// catch 404
 app.use((req, res, next) => {
   const error = new Error('Sorry! We couldn\'t find the page you were looking for.');
   error.status = 404;
   res.status(404).render('page-not-found', { error });
 });
 
-// error handler
+// global error handler
 app.use((err, req, res, next) => {
   err.status = err.status || 500;
   err.message = err.message || 'Sorry! There was an unexpected error on the server.';
@@ -40,6 +40,7 @@ app.use((err, req, res, next) => {
   res.render('error', { err });
 });
 
+// IIFE to connect and sync the database
 (async () => {
   try {
     await sequelize.authenticate();
