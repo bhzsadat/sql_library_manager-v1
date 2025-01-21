@@ -13,7 +13,7 @@ router.get('/books', async (req, res, next) => {
     try {
         const books = await Book.findAll();
         res.render('index', { books });
-    } catch(error) {
+    } catch (error) {
         next(error);
     }
 });
@@ -45,7 +45,7 @@ router.post('/books/new', async (req, res, next) => {
 // GET /books/:id
 router.get('/books/:id', async (req, res, next) => {
     try {
-       const bookId = parseInt(req.params.id, 10);
+        const bookId = parseInt(req.params.id, 10);
         if (isNaN(bookId)) {
             console.log('Invalid ID:', req.params.id);
             return res.status(400).send('Invalid book ID');
@@ -57,7 +57,7 @@ router.get('/books/:id', async (req, res, next) => {
             res.status(404).render('page-not-found');
         }
     } catch (error) {
-        next(error); 
+        next(error);
     }
 });
 
@@ -73,7 +73,16 @@ router.post('/books/:id', async (req, res, next) => {
             res.render('page-not-found');
         }
     } catch (error) {
-        next(error);
+        if (error.name === 'SequelizeValidationError') {
+            const book = await Book.build(req.body);
+            book.id = req.params.id; // preserve the book ID
+            res.render('update-book', {
+                book,
+                errors: error.errors.map(err => err.message)
+            });
+        } else {
+            next(error);
+        }
     }
 });
 

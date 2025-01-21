@@ -5,12 +5,17 @@ block content
   
   //- Update Book form
   form(action=`/books/${book.id}` method='post')
+    if errors && errors.length
+      h2.error Oooops!
+      ul.error
+        each error in errors
+          li= error
     p
       label(for='title') Title
-      input(type='text' name='title' id='title' value=book.title required)
+      input(type='text' name='title' id='title' value=book.title)
     p
       label(for='author') Author
-      input(type='text' name='author' id='author' value=book.author required)
+      input(type='text' name='author' id='author' value=book.author)
     p
       label(for='genre') Genre
       input(type='text' name='genre' id='genre' value=book.genre)
